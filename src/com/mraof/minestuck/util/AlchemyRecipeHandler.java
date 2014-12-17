@@ -30,6 +30,7 @@ import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import com.google.gson.JsonDeserializer;
 import com.mraof.minestuck.Minestuck;
 import com.mraof.minestuck.modSupport.ExtraUtilitiesSupport;
 import com.mraof.minestuck.modSupport.Minegicka3Support;
@@ -938,6 +939,42 @@ public class AlchemyRecipeHandler {
 				return;
 		
 		OreDictionary.registerOre(name, item);
+	}
+	
+	
+	static abstract class RecipeDeserializer implements JsonDeserializer
+	{
+		
+		protected ItemStack getItemStack(String name)
+		{
+			Object item = getItem(name);
+			int metadata = getMeta(name);
+			if(item == null)
+				return null;
+			else if(item instanceof String)
+				return AlchemyRecipeHandler.getFirstOreItem((String) item);
+			Item resultItem = (Item) item;
+			if(metadata == OreDictionary.WILDCARD_VALUE)
+				metadata = 0;
+			return new ItemStack(resultItem, 1, metadata);
+		}
+		
+		protected Object getItem(String name)
+		{
+			if(name.indexOf('#') != -1)
+				name = name.substring(0, name.indexOf('#'));
+			if(name.startsWith("oreDict:"))
+				return name.substring(name.indexOf(':') + 1);
+			ResourceLocation identifier = new ResourceLocation(name);
+			return Item.itemRegistry.getObject(identifier);
+		}
+		
+		protected int getMeta(String name)
+		{
+			if(name.indexOf('#') != -1)
+				return Integer.parseInt(name.substring(name.indexOf('#') + 1));
+			else return OreDictionary.WILDCARD_VALUE;
+		}
 	}
 	
 }

@@ -1,0 +1,20 @@
+{
+    "recipes": [
+        { "item1": "coal", "item2": "stone", "mode": "AND", "result "coal_ore" },
+        { "item1": "coal", "item2": "stone", "mode": "OR", "result "coal_block" },
+        { "item1": "diamond", "item2": "stone", "mode": "AND", "result "diamond_ore" },
+        { "item1": "diamond", "item2": "stone", "mode": "OR", "result "diamond_block" },
+        { "item1": "dye#4", "item2": "stone", "mode": "AND", "result "lapis_ore" },
+        { "item1": "dye#4", "item2": "stone", "mode": "OR", "result "lapis_block" },
+        { "item1": "emerald", "item2": "stone", "mode": "AND", "result "emerald_ore" },
+        { "item1": "emerald", "item2": "stone", "mode": "OR", "result "emerald_block" },
+        { "item1": "iron_ingot", "item2": "stone", "mode": "AND", "result "iron_ore" },
+        { "item1": "iron_ingot", "item2": "stone", "mode": "OR", "result "iron_block" },
+        { "item1": "gold_ingot", "item2": "stone", "mode": "AND", "result "gold_ore" },
+        { "item1": "gold_ingot", "item2": "stone", "mode": "OR", "result "gold_block" },
+        { "item1": "redstone", "item2": "stone", "mode": "AND", "result "redstone_ore" },
+        { "item1": "redstone", "item2": "stone", "mode": "OR", "result "redstone_block" },
+        { "item1": "quartz", "item2": "netherrack", "mode": "AND", "result "quartz_ore" },
+        { "item1": "quartz", "item2": "netherrack", "mode": "OR", "result "quartz_block" }
+    ]
+}

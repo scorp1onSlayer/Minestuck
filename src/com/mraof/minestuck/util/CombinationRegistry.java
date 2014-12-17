@@ -1,12 +1,26 @@
 package com.mraof.minestuck.util;
 
+import java.io.Reader;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import com.mraof.minestuck.Minestuck;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class CombinationRegistry {
@@ -103,5 +117,83 @@ public class CombinationRegistry {
 	
 	public static Hashtable<List<Object>, ItemStack> getAllConversions() {
 		return combRecipes;
+	}
+	
+	private static final Gson STERIALIZER = new GsonBuilder().registerTypeAdapter(List.class, new RecipeDeserializer()).create();
+	
+	static int registerCombinationRecipes(Reader reader)
+	{
+		List<Recipe> recipes = STERIALIZER.fromJson(reader, List.class);
+		
+		if(recipes != null)
+		{
+			for(Recipe recipe : recipes)
+				combRecipes.put(recipe.input, recipe.output);
+			return recipes.size();
+		}
+		else return -1;
+	}
+	
+	private static class RecipeDeserializer extends AlchemyRecipeHandler.RecipeDeserializer
+	{
+		@Override
+		public Object deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		{
+			ArrayList<Recipe> list = new ArrayList<Recipe>();
+			JsonObject jsonObject = json.getAsJsonObject();
+			JsonArray recipes = jsonObject.get("recipes").getAsJsonArray();
+			for(int i = 0; i < recipes.size(); i++)
+			{
+				JsonObject recipe = recipes.get(i).getAsJsonObject();
+				
+				String name1 = recipe.get("item1").getAsString();
+				String name2 = recipe.get("item2").getAsString();
+				
+				Object item1 = getItem(name1), item2 = getItem(name2);
+				int meta1 = getMeta(name1), meta2 = getMeta(name2);
+				String modeName = recipe.get("mode").getAsString();
+				String resultName = recipe.get("result").getAsString();
+				ItemStack result = getItemStack(resultName);
+				
+				boolean mode;
+				if(modeName.toLowerCase().equals("and"))
+					mode = MODE_AND;
+				else if(modeName.toLowerCase().equals("or"))
+					mode = MODE_OR;
+				else
+				{
+					FMLLog.warning("[Minestuck] Can't translate mode \"%s\" to either \"AND\" or \"OR\" for recipe \"%s %s %s -> %s\".", modeName, name1, modeName, name2, resultName);
+					continue;
+				}
+				
+				if(item1 == null || item2 == null)
+				{
+					Object[] formatting =  new String[]{item1 == null ? name1 : name2, name1, modeName, name2, resultName};
+					FMLLog.warning("[Minestuck] Can't translate ingredient \"%s\" into an item stack for recipe \"%s %s %s -> %s\".", formatting);
+					continue;
+				}
+				
+				if(result == null)
+				{
+					FMLLog.warning("[Minestuck] Can't translate result \"%s\" into an item stack for recipe \"%s %s %s -> %s\".", resultName, name1, modeName, name2, resultName);
+					continue;
+				}
+				
+				list.add(new Recipe(Arrays.asList(item1, meta1, item2, meta2, mode), result));
+			}
+			
+			return list;
+		}
+	}
+	
+	private static class Recipe
+	{
+		List<Object> input;
+		ItemStack output;
+		Recipe(List<Object> list, ItemStack stack)
+		{
+			input = list;
+			output = stack;
+		}
 	}
 }
