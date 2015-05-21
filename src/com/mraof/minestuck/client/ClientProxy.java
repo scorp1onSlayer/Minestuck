@@ -1,6 +1,9 @@
 package com.mraof.minestuck.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiYesNo;
+import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
@@ -49,10 +52,41 @@ import com.mraof.minestuck.tileentity.TileEntityGatePortal;
 public class ClientProxy extends CommonProxy
 {
 
-	public static EntityPlayer getPlayer() {	//This seems to prevent the server from crashing on startup?
+	public static EntityPlayer getPlayer()	//This seems to prevent the server from crashing on startup?
+	{
 		return Minecraft.getMinecraft().thePlayer;
 	}
-
+	
+	private static boolean yesNoResult;
+	
+	public static boolean openYesNoGui(String str1, String str2)
+	{
+		GuiYesNoCallback callback = new GuiYesNoCallback()
+		{
+			@Override
+			public void confirmClicked(boolean result, int id)
+			{
+				yesNoResult = result;
+				synchronized(this)
+				{
+					this.notifyAll();
+				}
+			}
+		};
+		
+		synchronized(callback)
+		{
+			GuiScreen prev = Minecraft.getMinecraft().currentScreen = new GuiYesNo(callback, str1, str2, 0);
+			try
+			{
+				callback.wait();
+			} catch (InterruptedException e)
+			{}
+		}
+		
+		return yesNoResult;
+	}
+	
 	@SideOnly(Side.CLIENT)
 	public static void registerRenderers() 
 	{
