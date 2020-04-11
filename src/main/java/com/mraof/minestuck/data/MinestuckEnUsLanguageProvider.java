@@ -27,6 +27,7 @@ import com.mraof.minestuck.item.crafting.alchemy.GristTypes;
 import com.mraof.minestuck.jei.JeiGristCost;
 import com.mraof.minestuck.network.EffectTogglePacket;
 import com.mraof.minestuck.player.*;
+import com.mraof.minestuck.skaianet.Generator;
 import com.mraof.minestuck.skaianet.MergeResult;
 import com.mraof.minestuck.skaianet.PredefineData;
 import com.mraof.minestuck.skaianet.SkaianetHandler;
@@ -42,6 +43,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
+import net.minecraft.util.text.TextFormatting;
 
 public class MinestuckEnUsLanguageProvider extends MinestuckLanguageProvider
 {
@@ -542,7 +544,7 @@ public class MinestuckEnUsLanguageProvider extends MinestuckLanguageProvider
 		add(MSItems.BUG_NET, "Net");
 		addTooltip(MSItems.BUG_NET, "Perfect for catching bugs and frogs!");
 		add(MSItems.FROG, "Frog");
-		addExtra(MSItems.FROG, "type.random", "Random Frog");
+		addExtra(MSItems.FROG, "random", "Random Frog");
 		addExtra(MSItems.FROG, "type.0", "Frog");
 		addExtra(MSItems.FROG, "type.1", "Totally Normal Frog");
 		addExtra(MSItems.FROG, "type.2", "Ruby Contraband");
@@ -551,13 +553,13 @@ public class MinestuckEnUsLanguageProvider extends MinestuckLanguageProvider
 		addExtra(MSItems.FROG, "type.5", "Golden Frog");
 		addExtra(MSItems.FROG, "type.6", "Frog");
 		addExtra(MSItems.FROG, "desc.4", "frog.null.name");
-		addExtra(MSItems.FROG, "desc.6", "§k Susan");
+		addExtra(MSItems.FROG, "desc.6", TextFormatting.OBFUSCATED+"Susan");
 		addExtra(MSItems.FROG, "eyes.0", "Lighter Eyes");
 		addExtra(MSItems.FROG, "eyes.1", "Darker Eyes");
 		addExtra(MSItems.FROG, "eyes.2", "Blank Eyes");
-		addExtra(MSItems.FROG, "belly.0", "Solid-Colored Belly");
-		addExtra(MSItems.FROG, "belly.1", "Spotted Belly");
-		addExtra(MSItems.FROG, "belly.2", "Striped Belly");
+		addExtra(MSItems.FROG, "belly.1", "Solid-Colored Belly");
+		addExtra(MSItems.FROG, "belly.2", "Spotted Belly");
+		addExtra(MSItems.FROG, "belly.3", "Striped Belly");
 		addExtra(MSItems.FROG, "size.0", "Tiny");
 		addExtra(MSItems.FROG, "size.1", "Small");
 		addExtra(MSItems.FROG, "size.2", "Normal Sized");
@@ -1014,6 +1016,7 @@ public class MinestuckEnUsLanguageProvider extends MinestuckLanguageProvider
 		add(MergeResult.MERGED_SESSION_FULL, "Too many players in total in both player's sessions");
 		add(MergeResult.BOTH_CUSTOM, "Can't merge two custom sessions");
 		add(MergeResult.GENERIC_FAIL, "Merge failed");
+		add(Generator.NO_AVAILABLE_TITLES, "No title was available to generate under current circumstances.");
 		
 		add(CheckLandCommand.CHECK, "You are currently in %s.");
 		add(CheckLandCommand.FAIL, "You are currently not in a land dimension.");
@@ -1054,8 +1057,10 @@ public class MinestuckEnUsLanguageProvider extends MinestuckLanguageProvider
 		add(PredefineData.TITLE_ALREADY_SET, "That player already has their title set to %s");
 		add(PredefineData.TITLE_ALREADY_USED, "The title %s is already used in that players session");
 		add(PredefineData.RESETTING_TERRAIN_TYPE, "The currently set terrain type %s is not compatible with land type, and will be reset");
-		add(PredefineData.INCOMPATIBLE_LAND, "The currently predefined title land type %s does not allow this terrain type");
-		add(PredefineData.INVALID_LAND_ORDER, "The title land type has to be predefined before the terrain land type");
+		add(PredefineData.GENERATED_TITLE, "Generated %s as predefined title");
+		add(PredefineData.CHANGED_TITLE, "Changed predefined title from %s to %s due to a new title land type");
+		add(PredefineData.GENERATED_TITLE_LAND, "Generated %s as predefined title land type");
+		add(PredefineData.CHANGED_TITLE_LAND, "Changed predefined title land type from %s to %s due to a new terrain land type");
 		
 		add(JeiGristCost.GRIST_COSTS, "Grist Costs");
 		
