@@ -12,4 +12,6 @@ public interface IEntityMultiPart
     void updatePartPositions();
     void addPart(Entity entityPart, int id);
     void onPartDeath(Entity entityPart, int id);
+
+    Entity[] getParts();
 }

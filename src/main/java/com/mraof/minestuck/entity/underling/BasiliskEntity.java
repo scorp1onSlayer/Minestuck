@@ -11,19 +11,32 @@ import com.mraof.minestuck.world.storage.PlayerSavedData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine;
+
+import java.security.SecureRandom;
+import java.util.UUID;
 
 public class BasiliskEntity extends UnderlingEntity implements IEntityMultiPart
 {
 	private UnderlingPartEntity tail;
-	
+	protected Boolean inWorld = false;
+
 	public BasiliskEntity(EntityType<? extends BasiliskEntity> type, World world)
 	{
 		super(type, world);
 		tail = new UnderlingPartEntity(this, 0, 3F, 2F);
-		//world.addEntity(tail); TODO Not safe to add entities to world on creation. A different solution is needed
+
+		if(this.getUniqueID() == tail.getUniqueID())
+		{
+		 	inWorld = true;
+		}
 	}
 	
 	@Override
@@ -49,7 +62,7 @@ public class BasiliskEntity extends UnderlingEntity implements IEntityMultiPart
 	{
 		return MSSoundEvents.ENTITY_BASILISK_DEATH;
 	}
-	
+
 	@Override
 	public GristSet getGristSpoils()
 	{
@@ -104,6 +117,11 @@ public class BasiliskEntity extends UnderlingEntity implements IEntityMultiPart
 	{
 		super.baseTick();
 		this.updatePartPositions();
+
+		if(!inWorld  && !world.isRemote)
+		{
+			world.addEntity(tail);
+		}
 	}
 
 	@Override
@@ -118,6 +136,7 @@ public class BasiliskEntity extends UnderlingEntity implements IEntityMultiPart
 		if(par1Entity != this.tail)
 			super.collideWithEntity(par1Entity);
 	}
+
 	@Override
 	public void setPositionAndRotation(double par1, double par3, double par5, float par7, float par8) {
 		super.setPositionAndRotation(par1, par3, par5, par7, par8);
@@ -147,7 +166,13 @@ public class BasiliskEntity extends UnderlingEntity implements IEntityMultiPart
 	{
 
 	}
-	
+
+	@Override
+	public Entity[] getParts()
+	{
+		return new UnderlingPartEntity[]{this.tail};
+	}
+
 	@Override
 	public void onDeath(DamageSource cause)
 	{
